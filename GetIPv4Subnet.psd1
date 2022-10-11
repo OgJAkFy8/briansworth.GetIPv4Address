@@ -12,13 +12,13 @@
 RootModule = 'GetIPv4Subnet.psm1'
 
 # Version number of this module.
-ModuleVersion = '0.1.2'
+ModuleVersion = '0.1.1'
 
 # Supported PSEditions
 # CompatiblePSEditions = @()
 
 # ID used to uniquely identify this module
-GUID = '982f45d8-6ef5-4937-9fcb-3f222a3b4728'
+GUID = 'bf9e28d2-80b0-43e0-9bee-7721017e9670'
 
 # Author of this module
 Author = 'Brian Farnsworth'
@@ -76,8 +76,6 @@ FunctionsToExport = @(
   'Convert-NetMaskToCIDR'
   'Get-CIDRFromHostCount'
   'Get-IPv4Subnet'
-  'Ping-IpRange'
-  'Get-SubnetCheatSheet'
 )
 
 # Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.
