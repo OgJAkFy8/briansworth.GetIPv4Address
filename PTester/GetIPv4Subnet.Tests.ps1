@@ -1,3 +1,4 @@
+#requires -Version 3.0 -Modules @{ ModuleName="Pester"; ModuleVersion="5.3" }
 Import-Module -Name ./GetIPv4Subnet.psm1 -Force
 
 BeforeAll {
