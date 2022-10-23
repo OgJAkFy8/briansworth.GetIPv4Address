@@ -76,9 +76,7 @@ FunctionsToExport = @(
   'Convert-NetMaskToCIDR'
   'Get-CIDRFromHostCount'
   'Get-IPv4Subnet'
-  'Ping-IpRange'
   'Get-SubnetCheatSheet'
-  'Find-MtuSize'
 )
 
 # Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.
@@ -88,7 +86,7 @@ CmdletsToExport = @()
 VariablesToExport = @()
 
 # Aliases to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no aliases to export.
-AliasesToExport = @('pingr','SubnetList','ListSubnets','ToCIDR','ToMask')
+AliasesToExport = @('SubnetList','ListSubnets','ToCIDR','ToMask')
 
 # DSC resources to export from this module
 # DscResourcesToExport = @()

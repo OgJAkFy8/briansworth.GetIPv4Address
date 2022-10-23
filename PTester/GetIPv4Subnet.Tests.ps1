@@ -1,4 +1,3 @@
-#requires -Version 3.0 -Modules @{ ModuleName="Pester"; ModuleVersion="5.3" }
 Import-Module -Name ./GetIPv4Subnet.psm1 -Force
 
 BeforeAll {
@@ -66,6 +65,16 @@ BeforeAll {
         LastHostIP = '172.22.47.254';
         Broadcast = '172.22.47.255';
     }
+    $subnet4 = [PSCustomObject]@{
+        CidrId = '192.168.1.1/32';
+        NetworkId = '192.168.1.1';
+        SubnetMask = '255.255.255.255';
+        PrefixLength = '32';
+        HostCount = '0';
+        FirstHostIP = $null;
+        LastHostIP = $null;
+        Broadcast = '192.168.1.1';
+    }
 }
 
 Describe 'Convert-IPv4AddressToBinaryString' {
@@ -98,6 +107,7 @@ Describe 'Get-IPv4Subnet' {
             @{'IP' = '10.11.255.0'; 'Prefix' = '16'; 'NetMask' = '255.255.0.0'; 'HostCount' = '65534'; 'Example' = $subnet2;}
             @{'IP' = '172.22.32.0'; 'Prefix' = '20'; 'NetMask' = '255.255.240.0'; 'HostCount' = '4094'; 'Example' = $subnet3;}
             @{'IP' = '172.22.47.254'; 'Prefix' = '20'; 'NetMask' = '255.255.240.0'; 'HostCount' = '4090'; 'Example' = $subnet3;}
+            @{'IP' = '192.168.1.1'; 'Prefix' = '32'; 'NetMask' = '255.255.255.255'; 'HostCount' = '0'; 'Example' = $subnet4;}
         )
     }
 
@@ -154,5 +164,49 @@ Describe 'Add-IntToIPv4Address' {
 
     It 'Throws if overflow occurs' {
         { Add-IntToIPv4Address -IPv4Address 255.255.255.255 -Integer 1 -ErrorAction Stop } | Should -Throw
+    }
+}
+
+Describe 'Convert-NetMaskToCIDR' {
+    BeforeAll {
+        $script:cidrTests = @(
+            @{'NetMask' = '255.255.255.255'; 'Expected' = '32';}
+            @{'NetMask' = '255.255.255.252'; 'Expected' = '30';}
+            @{'NetMask' = '255.255.255.248'; 'Expected' = '29';}
+            @{'NetMask' = '255.255.255.240'; 'Expected' = '28';}
+            @{'NetMask' = '255.255.255.224'; 'Expected' = '27';}
+            @{'NetMask' = '255.255.255.192'; 'Expected' = '26';}
+            @{'NetMask' = '255.255.255.0'; 'Expected' = '24';}
+            @{'NetMask' = '255.255.128.0'; 'Expected' = '17';}
+            @{'NetMask' = '255.255.0.0'; 'Expected' = '16';}
+            @{'NetMask' = '255.254.0.0'; 'Expected' = '15';}
+        )
+    }
+
+    It 'Successfully converts SubnetMask to CIDR prefix length' {
+        foreach ($test in $script:cidrTests)
+        {
+            Write-Verbose "Netmask: [$($test.NetMask)]" -Verbose
+            Convert-NetMaskToCIDR -SubnetMask $test.NetMask | Should -BeExactly $test.Expected
+        }
+    }
+
+    It 'Throws an exception with invalid subnet mask' {
+        $expected = "Invalid SubnetMask specified"
+
+        foreach ($netmask in @('20.0.0.0', '255.0.255.0'))
+        {
+            { Convert-NetMaskToCIDR -SubnetMask $netmask -ErrorAction Stop } | Should -Throw "$expected *$netmask*"
+        }
+    }
+}
+
+Describe 'Convert-CIDRToNetMask' {
+    It 'Successfully converts prefix length to subnet mask' {
+        foreach ($test in $script:cidrTests)
+        {
+            Write-Verbose "Prefix: [$($test.Expected)]" -Verbose
+            Convert-CIDRToNetMask -PrefixLength $test.Expected | Should -BeExactly $test.Netmask
+        }
     }
 }

@@ -9,7 +9,6 @@ IP addressing, subnets and so much more
 - Get-CidrFromHostCount
 - Convert-IPv4AddressToBinaryString
 - Ping-IpRange
-- Test-MtuSize
 
 
 
